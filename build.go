@@ -19,6 +19,39 @@ func GetHTML(contents string) string {
 	return htmlOut
 }
 
+//Parse JSON to start a Meta Tag build
+func GetMetaTag(tags string) string {
+	htmlOut := ""
+	response, err := toStruct(tags)
+
+	if err != nil {
+		htmlOut = "Invalid Json format"
+	} else {
+		htmlOut = buildMetaTags(response)
+	}
+
+	return htmlOut
+}
+
+func buildMetaTags(tags map[string]interface{}) string {
+	var metaTags bytes.Buffer
+
+	s := reflect.ValueOf(tags["metas"])
+	for i := 0; i < s.Len(); i++ {
+		if reflect.TypeOf(s.Index(i).Interface()).Kind() == reflect.Map {
+			for k, v := range toMap(s.Index(i).Interface().(interface{})) {
+				metaTags.WriteString("<meta ")
+				metaTags.WriteString(k)
+				metaTags.WriteString("=\"")
+				metaTags.WriteString(v)
+				metaTags.WriteString("\">")
+			}
+		}
+	}
+
+	return metaTags.String()
+}
+
 func buildComponents(components map[string]interface{}) string {
 	html := ""
 

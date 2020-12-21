@@ -85,11 +85,14 @@ func buildElement(element string, attributes map[string]string, content string) 
 	}
 
 	htmlOut.WriteString(">")
-	htmlOut.WriteString(content)
 
-	htmlOut.WriteString("</")
-	htmlOut.WriteString(element)
-	htmlOut.WriteString(">")
+	if element != "img" {
+		htmlOut.WriteString(content)
+
+		htmlOut.WriteString("</")
+		htmlOut.WriteString(element)
+		htmlOut.WriteString(">")
+	}
 
 	return htmlOut.String()
 }

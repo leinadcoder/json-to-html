@@ -132,7 +132,7 @@ func buildComponents(components map[string]interface{}) string {
 			}
 
 			if reflect.TypeOf(s.Index(i).Interface()).Kind() == reflect.String {
-				contents = contents + buildElement("p", make(map[string]string), s.Index(i).Interface().(string))
+				contents = contents + s.Index(i).Interface().(string)
 			}
 		}
 

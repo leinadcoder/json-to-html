@@ -33,6 +33,20 @@ func GetMetaTag(tags string) string {
 	return htmlOut
 }
 
+//Parse JSON to start a Scripts build
+func GetScripts(tags string) string {
+	htmlOut := ""
+	response, err := toStruct(tags)
+
+	if err != nil {
+		htmlOut = "Invalid Json format"
+	} else {
+		htmlOut = buildScripts(response)
+	}
+
+	return htmlOut
+}
+
 func buildMetaTags(tags map[string]interface{}) string {
 	var metaTags bytes.Buffer
 
@@ -50,6 +64,34 @@ func buildMetaTags(tags map[string]interface{}) string {
 	}
 
 	return metaTags.String()
+}
+
+func buildScripts(elements map[string]interface{}) string {
+	var scripts bytes.Buffer
+
+	if _, exists := elements["css"]; exists {
+		if reflect.TypeOf(elements["css"]).Kind() == reflect.Slice {
+			s := reflect.ValueOf(elements["css"])
+			for i := 0; i < s.Len(); i++ {
+				scripts.WriteString("<link rel=\"stylesheet\" type=\"text/css\" href=\"")
+				scripts.WriteString(s.Index(i).Interface().(string))
+				scripts.WriteString("\">")
+			}
+		}
+	}
+
+	if _, exists := elements["js"]; exists {
+		if reflect.TypeOf(elements["js"]).Kind() == reflect.Slice {
+			s := reflect.ValueOf(elements["js"])
+			for i := 0; i < s.Len(); i++ {
+				scripts.WriteString("<script type=\"text/javascript\" src=\"")
+				scripts.WriteString(s.Index(i).Interface().(string))
+				scripts.WriteString("\"></script>")
+			}
+		}
+	}
+
+	return scripts.String()
 }
 
 func buildComponents(components map[string]interface{}) string {

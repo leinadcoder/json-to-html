@@ -161,7 +161,7 @@ func buildElement(element string, attributes map[string]string, content string) 
 
 	htmlOut.WriteString(">")
 
-	if element != "img" {
+	if element != "img" && element != "input" {
 		htmlOut.WriteString(content)
 
 		htmlOut.WriteString("</")
